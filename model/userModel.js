@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     loyaltyPoints: { type: Number, default: 0 },
     orderHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    role: { type: String, enum: ['user'], default: 'user' }
 });
 
 

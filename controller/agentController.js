@@ -1,13 +1,14 @@
-const Agent = require('../models/agentModel');
-const Order = require('../models/orderModel');
+const Agent = require('../model/agentModel');
+const Order = require('../model/orderModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
 // Generate JWT Token
 const signToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
+    // Accepts agent object, returns JWT with role
+    return jwt.sign({ id: id._id || id, role: id.role || 'agent' }, process.env.JWT_SECRET || "mysecretkey", {
+        expiresIn: process.env.JWT_EXPIRES_IN || '1h'
     });
 };
 
@@ -33,7 +34,7 @@ const registerAgent = async (req, res) => {
         });
 
         // Generate token
-        const token = signToken(newAgent._id);
+        const token = signToken(newAgent);
 
         // Remove password from output
         newAgent.password = undefined;
@@ -68,7 +69,7 @@ const loginAgent = async (req, res) => {
         }
 
         // Generate token
-        const token = signToken(agent._id);
+        const token = signToken(agent);
         agent.password = undefined;
 
         res.status(200).json({

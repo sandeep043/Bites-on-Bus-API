@@ -7,8 +7,7 @@ const restaurantSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'RestaurantOwner',
-        required: true
+        ref: 'RestaurantOwner'
     },
     cuisineType: {
         type: String,

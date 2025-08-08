@@ -2,7 +2,9 @@ const express = require("express");
 const dotenv = require('dotenv');
 const connectDB = require('./database/db');
 const userRoutes = require('./routes/userRoutes');
-const login = require('./routes/login');
+const restaurantOwnerRoutes = require('./routes/restaurantOwnerRoutes');
+
+
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const busTripRoutes = require('./routes/busTripRoute');
 const cors = require('cors');
@@ -33,8 +35,9 @@ app.use(cors({
 
 // //routes  
 
-app.use('/api', login);
+
 app.use('/api/user', userRoutes);
+app.use('/api/owner', restaurantOwnerRoutes);
 app.use('/api/restaurant', restaurantRoutes)
 app.use('/api/busTrip', busTripRoutes);
 app.use(cors());

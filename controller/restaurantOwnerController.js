@@ -1,12 +1,13 @@
-const RestaurantOwner = require('../models/restaurantOwnerModel');
-const Restaurant = require('../models/restaurantModel');
+const RestaurantOwner = require('../model/restaurantOwnerModel'); // Fix import path
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
 // Helper: Generate JWT Token
 const signToken = (id) => {
-    return jwt.sign({ id }, "mysecretkey", {
+    // Accepts owner object, returns JWT with role
+    return jwt.sign({ id: id._id || id, role: id.role || 'owner' }, "mysecretkey", {
         expiresIn: '1h'
     });
 };
@@ -14,98 +15,75 @@ const signToken = (id) => {
 // 1. REGISTER OWNER
 const registerOwner = async (req, res) => {
     try {
-        const { name, email, password, phone, govtId } = req.body;
-
-        // Check if owner exists
-        const existingOwner = await RestaurantOwner.findOne({ email });
+        const ownerData = req.body;
+        const existingOwner = await RestaurantOwner.findOne({ email: ownerData.email });
         if (existingOwner) {
-            return res.status(400).json({ message: "Email already registered" });
+            return res.status(400).json({ message: "Owner Already Exists" });
+        }
+        // Only assign plain password, let pre-save hook hash it
+        const owner = new RestaurantOwner(ownerData);
+        await owner.save();
+        res.status(201).json({ message: "Owner Created Successfully" });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+};
+const addOwner = async (req, res) => {
+    try {
+        const ownerData = req.body;
+        const existingOwner = await RestaurantOwner.findOne({ email: ownerData.email });
+        if (existingOwner) {
+            return res.status(400).json({ message: "owner Already Exists" });
         }
 
-        // Create new owner
-        const newOwner = await RestaurantOwner.create({
-            name,
-            email,
-            password,
-            phone,
-            govtId
-        });
-        await newOwner.save();
-        // Generate token
-        const token = signToken(newOwner._id);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(ownerData.password, salt);
 
-        // Remove password from output
-        newOwner.password = undefined;
-
-        res.status(201).json({
-            status: 'success',
-            token,
-            data: newOwner
-        });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+        ownerData.password = hashedPassword;
+        const Owner = new RestaurantOwner(ownerData);
+        await Owner.save();
+        res.status(201).json({ message: "User Created Successfully" });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
     }
 };
 
-// 2. LOGIN OWNER
+
+//2. LOGIN OWNER
 const loginOwner = async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        // Check if email/password exists
-        if (!email || !password) {
-            return res.status(400).json({ message: "Please provide email and password" });
+        const owner = await RestaurantOwner.findOne({ email });
+        if (!owner) {
+            return res.status(401).json({ message: 'Invalid email' });
         }
 
-        // Check if owner exists
-        const owner = await RestaurantOwner.findOne({ email }).select('+password');
-        if (!owner || !(await owner.correctPassword(password, owner.password))) {
-            return res.status(401).json({ message: "Incorrect email or password" });
+        const isMatch = await bcrypt.compare(password, owner.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Generate token
-        const token = signToken(owner._id);
-        owner.password = undefined;
-
+        const token = jwt.sign(
+            { id: owner._id, email: owner.email, role: owner.role },
+            "mysecretkey",
+            { expiresIn: '1h' }
+        );
         res.status(200).json({
-            status: 'success',
-            token,
-            data: owner
+            message: 'login successful',
+            token: token,
+            owner: owner
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.log(error);
+        res.status(401).json({ message: error.message });
     }
 };
 
-// 3. PROTECT MIDDLEWARE (Add to routes that need auth)
-const protect = async (req, res, next) => {
-    try {
-        // 1) Get token
-        let token;
-        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-            token = req.headers.authorization.split(' ')[1];
-        }
 
-        if (!token) {
-            return res.status(401).json({ message: "You are not logged in!" });
-        }
-
-        // 2) Verify token
-        const decoded = jwt.verify(token, "mysecretkey");
-
-        // 3) Check if owner exists
-        const currentOwner = await RestaurantOwner.findById(decoded.id);
-        if (!currentOwner) {
-            return res.status(401).json({ message: "Owner no longer exists" });
-        }
-
-        // Grant access
-        req.owner = currentOwner;
-        next();
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
 
 // 4. GET OWNER PROFILE
 const getOwnerProfile = async (req, res) => {
@@ -200,9 +178,9 @@ const addRestaurant = async (req, res) => {
 module.exports = {
     registerOwner,
     loginOwner,
-    protect,
     getOwnerProfile,
     updateOwnerProfile,
     deleteOwnerAccount,
-    addRestaurant
+    addRestaurant,
+    addOwner
 };
