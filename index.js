@@ -6,6 +6,7 @@ const login = require('./routes/login');
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const busTripRoutes = require('./routes/busTripRoute');
 const cors = require('cors');
+const path = require('path');
 
 
 // connect to mongoDB
@@ -15,7 +16,10 @@ const app = express();
 app.use(express.json());
 
 
-
+app.use(cors({
+    origin: 'http://localhost:3000', // React dev URL
+    credentials: true
+}));
 
 
 
@@ -37,6 +41,6 @@ app.use(cors());
 
 
 
-app.listen(3000, () => {
-    console.log(`Server is running on port ${3000}`);
+app.listen(4000, () => {
+    console.log(`Server is running on port ${4000}`);
 }); 
