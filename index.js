@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes');
 const restaurantOwnerRoutes = require('./routes/restaurantOwnerRoutes');
 const agentRoutes = require('./routes/agentRoute');
 const adminRoutes = require('./routes/adminRoutes');
+const PNRPassengersDetailsRoute = require('./routes/PNRPassengersDetailsRoute');
 
 
 const restaurantRoutes = require('./routes/restaurantRoutes');
@@ -44,6 +45,7 @@ app.use('/api/restaurant', restaurantRoutes)
 app.use('/api/busTrip', busTripRoutes);
 app.use('/api/agent', agentRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/pnr', PNRPassengersDetailsRoute);
 
 
 
