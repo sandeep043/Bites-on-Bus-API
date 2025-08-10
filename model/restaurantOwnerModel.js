@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { string } = require('joi');
+const { string, ref } = require('joi');
 
 const restaurantOwnerSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -12,7 +12,8 @@ const restaurantOwnerSchema = new mongoose.Schema({
         required: true
     },
     ownedRestaurant: {
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Restaurant',
     },
     createdAt: {
         type: Date,

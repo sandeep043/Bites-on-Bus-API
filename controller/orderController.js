@@ -1,7 +1,7 @@
-const Order = require('../models/orderModel');
-const Restaurant = require('../models/restaurantModel');
-const BusTrip = require('../models/busTripModel');
-const PNRPassengerDetails = require('../models/pnrPassengerModel');
+const Order = require('../model/orderModel');
+const Restaurant = require('../model/restaurantModel');
+const BusTrip = require('../model/busTripModel');
+const PNRPassengerDetails = require('../model/PNRPassengersDetails');
 const mongoose = require('mongoose');
 
 // 1. CREATE NEW ORDER
@@ -358,11 +358,30 @@ const getRestaurantOrders = async (req, res) => {
     }
 };
 
+const getAllOrders = async (req, res) => {
+    try {
+        const orders = await Order.find()
+            .populate('restaurantId', 'name cuisineType')
+            .populate('busId', 'busNumber')
+            .sort('-createdAt');
+        res.status(200).json({
+            status: 'success',
+            results: orders.length,
+            data: orders
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+}
+
 module.exports = {
     createOrder,
     getOrderById,
     getOrdersByPnr,
     updateOrderStatus,
     cancelOrder,
-    getRestaurantOrders
+    getRestaurantOrders,
+    getAllOrders
 };

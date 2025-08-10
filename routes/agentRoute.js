@@ -1,18 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const agentController = require('../controllers/agentController');
+const { registerAgent, loginAgent, getAgentProfile, updateAgentProfile, deleteAgentAccount } = require('../controller/agentController');
+const authenticate = require('../middleware/authenticate');
+const roleMiddleware = require('../middleware/authMiddleware');
 
-// Public routes
-router.post('/register', agentController.registerAgent);
-router.post('/login', agentController.loginAgent);
+// Register agent
+router.post('/register', registerAgent);
 
-// Protected routes
-router.use(agentController.protect);
+// Login agent
+router.post('/login', loginAgent);
 
-router.get('/me', agentController.getAgentProfile);
-router.patch('/location', agentController.updateAgentLocation);
-router.patch('/availability', agentController.updateAvailability);
-router.get('/orders', agentController.getAssignedOrders);
-router.patch('/orders/:id/status', agentController.updateOrderStatus);
+// Get agent profile (protected)
+router.get('/profile', authenticate, roleMiddleware('agent'), getAgentProfile);
+
+// Update agent profile (protected)
+router.put('/update', authenticate, roleMiddleware('agent'), updateAgentProfile);
+
+// Delete agent account (protected)
+router.delete('/delete', authenticate, roleMiddleware('agent'), deleteAgentAccount);
 
 module.exports = router;

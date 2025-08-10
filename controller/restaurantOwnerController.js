@@ -15,17 +15,37 @@ const signToken = (id) => {
 // 1. REGISTER OWNER
 const registerOwner = async (req, res) => {
     try {
-        const ownerData = req.body;
-        const existingOwner = await RestaurantOwner.findOne({ email: ownerData.email });
+        const { name, email, phone, password, govtId, restaurant } = req.body;
+        // Check if owner email already exists
+        const existingOwner = await RestaurantOwner.findOne({ email });
         if (existingOwner) {
             return res.status(400).json({ message: "Owner Already Exists" });
         }
-        // Only assign plain password, let pre-save hook hash it
-        const owner = new RestaurantOwner(ownerData);
+        // Create owner first (without ownedRestaurant)
+        const owner = new RestaurantOwner({ name, email, phone, password, govtId });
         await owner.save();
-        res.status(201).json({ message: "Owner Created Successfully" });
-    }
-    catch (error) {
+        let restaurantId = null;
+        // Create restaurant if restaurant details provided
+        if (restaurant) {
+            const Restaurant = require('../model/restaurantModel');
+            // Check if restaurant name already exists
+            const existingRestaurant = await Restaurant.findOne({ name: restaurant.name });
+            if (existingRestaurant) {
+                return res.status(400).json({ message: "Restaurant name already registered, try new" });
+            }
+            // Create restaurant and link owner
+            const newRestaurant = new Restaurant({
+                ...restaurant,
+                owner: owner._id
+            });
+            await newRestaurant.save();
+            restaurantId = newRestaurant._id;
+            // Update owner with ownedRestaurant
+            owner.ownedRestaurant = restaurantId;
+            await owner.save();
+        }
+        res.status(201).json({ message: restaurant ? "Owner and Restaurant Created Successfully" : "Owner Created Successfully" });
+    } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error", error });
     }
@@ -174,6 +194,18 @@ const addRestaurant = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+// 8. GET ALL OWNERS 
+const getAllOwners = async (req, res) => {
+    try {
+        const owners = await RestaurantOwner.find();
+        res.status(200).json({
+            status: 'success',
+            data: owners
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 module.exports = {
     registerOwner,
@@ -182,5 +214,6 @@ module.exports = {
     updateOwnerProfile,
     deleteOwnerAccount,
     addRestaurant,
-    addOwner
+    addOwner,
+    getAllOwners
 };

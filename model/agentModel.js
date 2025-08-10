@@ -5,6 +5,20 @@ const agentSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
     password: { type: String, required: true },
+    idNumber: {
+        type: String,
+        required: true
+    },
+    vehicleType: {
+        type: String,
+        enum: ['motorcycle', 'eBike', 'Scooter'],
+        required: true
+    },
+    licensePlate: { type: String, required: true },
+    zone: {
+        type: String,
+        required: true
+    },
     // Add other agent-specific fields here
     createdAt: { type: Date, default: Date.now },
     role: { type: String, enum: ['agent'], default: 'agent' }

@@ -14,14 +14,9 @@ const restaurantSchema = new mongoose.Schema({
         required: true
     },
     location: {
-        type: {
-            type: String,
-            default: 'Point'
-        },
-        coordinates: {
-            type: [Number],
-            required: true
-        }
+        type: String,
+        required: true
+
     },
     contactNumber: {
         type: String,
@@ -51,5 +46,5 @@ const restaurantSchema = new mongoose.Schema({
     }
 });
 
-restaurantSchema.index({ location: '2dsphere' });
+
 module.exports = mongoose.model('Restaurant', restaurantSchema);

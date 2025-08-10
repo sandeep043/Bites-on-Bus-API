@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const connectDB = require('./database/db');
 const userRoutes = require('./routes/userRoutes');
 const restaurantOwnerRoutes = require('./routes/restaurantOwnerRoutes');
+const agentRoutes = require('./routes/agentRoute');
+const adminRoutes = require('./routes/adminRoutes');
 
 
 const restaurantRoutes = require('./routes/restaurantRoutes');
@@ -40,7 +42,8 @@ app.use('/api/user', userRoutes);
 app.use('/api/owner', restaurantOwnerRoutes);
 app.use('/api/restaurant', restaurantRoutes)
 app.use('/api/busTrip', busTripRoutes);
-app.use(cors());
+app.use('/api/agent', agentRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 

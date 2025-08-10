@@ -22,7 +22,11 @@ const addRestaurant = async (req, res) => {
 
 const getAllRestaurants = async (req, res) => {
     try {
-        const restaurants = await Restaurant.find();
+        //include owner details in response 
+        const restaurants = await Restaurant.find().populate('owner', 'name email phone');
+        if (!restaurants || restaurants.length === 0) {
+            return res.status(404).json({ message: "No Restaurants Found" });
+        }
         res.status(200).json({ restaurants });
     }
     catch (error) {
