@@ -14,8 +14,8 @@ const restaurantSchema = new mongoose.Schema({
         required: true
     },
     location: {
-        type: String,
-        required: true
+        stop: { type: String, required: true },
+        city: { type: String, required: true }
 
     },
     contactNumber: {

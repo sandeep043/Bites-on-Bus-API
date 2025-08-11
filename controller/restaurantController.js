@@ -135,11 +135,36 @@ const getNearbyRestaurants = async (req, res) => {
     }
 };
 
+const getRestaurantsByLocation = async (req, res) => {
+    try {
+        const { stop, city } = req.query;
+        if (!stop || !city) {
+            return res.status(400).json({ message: "Stop and city are required" });
+        }
+
+        const restaurants = await Restaurant.find({
+            'location.stop': stop,
+            'location.city': city,
+            isActive: true
+        }).populate('owner', 'name email phone');
+
+        if (!restaurants || restaurants.length === 0) {
+            return res.status(404).json({ message: "No Restaurants Found for the given location" });
+        }
+
+        res.status(200).json({ restaurants });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+};
+
 module.exports = {
     addRestaurant,
     getAllRestaurants,
     getRestaurantById,
     updateRestaurant,
     deleteRestaurant,
-    getNearbyRestaurants
+    getNearbyRestaurants,
+    getRestaurantsByLocation
 };
