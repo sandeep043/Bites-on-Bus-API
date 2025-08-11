@@ -21,8 +21,11 @@ const registerOwner = async (req, res) => {
         if (existingOwner) {
             return res.status(400).json({ message: "Owner Already Exists" });
         }
-        // Create owner first (without ownedRestaurant)
-        const owner = new RestaurantOwner({ name, email, phone, password, govtId });
+        // Create owner first (without ownedRestaurant) 
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const owner = new RestaurantOwner({ name, email, phone, password: hashedPassword, govtId });
         await owner.save();
         let restaurantId = null;
         // Create restaurant if restaurant details provided

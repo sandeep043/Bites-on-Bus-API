@@ -20,6 +20,32 @@ const addRestaurant = async (req, res) => {
     }
 };
 
+const deleteMenuItem = async (req, res) => {
+    try {
+        const { restaurantId, menuItemId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(restaurantId)) {
+            return res.status(400).json({ message: "Invalid Restaurant ID" });
+        }
+
+        // Remove menu item by its _id
+        const restaurant = await Restaurant.findByIdAndUpdate(
+            restaurantId,
+            { $pull: { menu: { _id: menuItemId } } },
+            { new: true }
+        );
+
+        if (!restaurant) {
+            return res.status(404).json({ message: "Restaurant Not Found" });
+        }
+
+        res.status(200).json({ message: "Menu item deleted successfully", restaurant });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+};
+
 const getAllRestaurants = async (req, res) => {
     try {
         //include owner details in response 
@@ -52,6 +78,46 @@ const getRestaurantById = async (req, res) => {
         res.status(200).json({ restaurant });
     }
     catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+};
+
+const addMenuItem = async (req, res) => {
+    try {
+        const { restaurantId } = req.params;
+        const menuItem = req.body;
+        if (!restaurantId) {
+            return res.status(400).json({ message: "Restaurant ID is required" });
+        }
+        // Validate restaurantId
+
+
+
+        if (!mongoose.Types.ObjectId.isValid(restaurantId)) {
+            return res.status(400).json({ message: "Invalid Restaurant ID" });
+        }
+
+        // Validate required menu item fields
+        const requiredFields = ['name', 'price', 'prepTime'];
+        for (const field of requiredFields) {
+            if (!menuItem[field]) {
+                return res.status(400).json({ message: `Menu item ${field} is required` });
+            }
+        }
+
+        const restaurant = await Restaurant.findByIdAndUpdate(
+            restaurantId,
+            { $push: { menu: menuItem } },
+            { new: true, runValidators: true }
+        );
+
+        if (!restaurant) {
+            return res.status(404).json({ message: "Restaurant Not Found" });
+        }
+
+        res.status(200).json({ message: "Menu item added successfully", restaurant });
+    } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error", error });
     }
@@ -159,6 +225,40 @@ const getRestaurantsByLocation = async (req, res) => {
     }
 };
 
+const updateMenuItemAvailability = async (req, res) => {
+    try {
+        const { restaurantId, menuItemId } = req.params;
+        if (!restaurantId || !menuItemId) {
+            return res.status(400).json({ message: "Missing restaurantId or menuItemId" });
+        }
+        if (!mongoose.Types.ObjectId.isValid(restaurantId) || !mongoose.Types.ObjectId.isValid(menuItemId)) {
+            return res.status(400).json({ message: "Invalid Restaurant or Menu Item ID" });
+        }
+        const { isAvailable } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(restaurantId) || !mongoose.Types.ObjectId.isValid(menuItemId)) {
+            return res.status(400).json({ message: "Invalid Restaurant or Menu Item ID" });
+        }
+
+        // Find the restaurant and update the menu item's isAvailable field
+        const restaurant = await Restaurant.findOneAndUpdate(
+            { _id: restaurantId, "menu._id": menuItemId },
+            { $set: { "menu.$.isAvailable": isAvailable } },
+            { new: true }
+        );
+
+        if (!restaurant) {
+            return res.status(404).json({ message: "Restaurant or Menu Item Not Found" });
+        }
+
+        res.status(200).json({ message: "Menu item availability updated successfully", restaurant });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+};
+
+
 module.exports = {
     addRestaurant,
     getAllRestaurants,
@@ -166,5 +266,8 @@ module.exports = {
     updateRestaurant,
     deleteRestaurant,
     getNearbyRestaurants,
-    getRestaurantsByLocation
+    getRestaurantsByLocation,
+    addMenuItem,
+    deleteMenuItem,
+    updateMenuItemAvailability
 };

@@ -16,8 +16,8 @@ const agentSchema = new mongoose.Schema({
     },
     licensePlate: { type: String, required: true },
     zone: {
-        type: String,
-        required: true
+        stop: { type: String, required: true },
+        city: { type: String, required: true }
     },
     // Add other agent-specific fields here
     createdAt: { type: Date, default: Date.now },

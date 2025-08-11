@@ -5,7 +5,9 @@ const { addRestaurant,
     getRestaurantById,
     updateRestaurant,
     deleteRestaurant,
-    getRestaurantsByLocation } = require('../controller/restaurantController')
+    getRestaurantsByLocation,
+    addMenuItem,
+    deleteMenuItem, updateMenuItemAvailability } = require('../controller/restaurantController')
 
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -15,6 +17,11 @@ router.get('/location', getRestaurantsByLocation)
 
 router.get('/getall', authMiddleware, getAllRestaurants);
 router.get('/:id', getRestaurantById);
+router.post('/:restaurantId/menu', addMenuItem);
+router.delete('/:restaurantId/menu/:menuItemId', deleteMenuItem);
+router.patch('/:restaurantId/menu/:menuItemId/availability', updateMenuItemAvailability);
+
+
 router.put('/update/:id', authMiddleware, updateRestaurant);
 router.delete('/delete/:id', authMiddleware, deleteRestaurant);
 

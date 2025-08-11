@@ -33,7 +33,6 @@ const restaurantSchema = new mongoose.Schema({
         close: { type: String, required: true } // "22:00"
     },
     menu: [{
-        itemId: { type: String, required: true },
         name: { type: String, required: true },
         price: { type: Number, required: true },
         prepTime: { type: Number, required: true }, // in minutes
