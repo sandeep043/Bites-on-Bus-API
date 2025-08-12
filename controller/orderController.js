@@ -4,84 +4,71 @@ const BusTrip = require('../model/busTripModel');
 const PNRPassengerDetails = require('../model/PNRPassengersDetails');
 const mongoose = require('mongoose');
 
-// 1. CREATE NEW ORDER
+
 const createOrder = async (req, res) => {
     try {
-        const { pnr, restaurantId, items, deliveryStopId, paymentMethod } = req.body;
+        const {
+            userId,
+            restaurantId,
+            PNR,
+            DeliveryLocation,
+            customerDetails,
+            Orderitems,
+            totalAmount,
+            otp,
+            paymentId,
+            agentId
+        } = req.body;
 
+
+      
         // Validate required fields
-        if (!pnr || !restaurantId || !items || !deliveryStopId) {
+        if (
+            !userId ||
+            !restaurantId ||
+            !PNR ||
+            !DeliveryLocation ||
+            !DeliveryLocation.stop ||
+            !DeliveryLocation.city ||
+            !customerDetails ||
+            !customerDetails.name ||
+            !customerDetails.phone ||
+            !customerDetails.PNR ||
+            !customerDetails.seatNo ||
+            !Orderitems ||
+            !Array.isArray(Orderitems) ||
+            Orderitems.length === 0 ||
+            !totalAmount
+        ) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
-        // Check if PNR exists and get trip details
-        const passengerDetails = await PNRPassengerDetails.findOne({ pnr });
-        if (!passengerDetails) {
-            return res.status(404).json({ message: "PNR not found" });
-        }
-
-        // Get bus trip details
-        const busTrip = await BusTrip.findOne({ pnr });
-        if (!busTrip) {
-            return res.status(404).json({ message: "Bus trip not found for this PNR" });
-        }
-
-        // Verify delivery stop exists in trip
-        const deliveryStop = busTrip.intermediateStops.find(
-            stop => stop.stopId === deliveryStopId
-        );
-        if (!deliveryStop) {
-            return res.status(400).json({ message: "Invalid delivery stop for this trip" });
-        }
-
-        // Get restaurant details
-        const restaurant = await Restaurant.findById(restaurantId);
-        if (!restaurant) {
-            return res.status(404).json({ message: "Restaurant not found" });
-        }
-
-        // Calculate total amount and prepare order items
-        let totalAmount = 0;
-        const orderItems = items.map(item => {
-            const menuItem = restaurant.menu.find(menu => menu.itemId === item.itemId);
-            if (!menuItem) {
-                throw new Error(`Item ${item.itemId} not found in menu`);
-            }
-            totalAmount += menuItem.price * item.quantity;
-            return {
-                itemId: item.itemId,
-                name: menuItem.name,
-                quantity: item.quantity,
-                unitPrice: menuItem.price
-            };
-        });
-
-        // Create order
-        const newOrder = await Order.create({
-            pnr,
-            busId: busTrip.busId,
+        // Create the order
+        const newOrder = new Order({
+            userId,
             restaurantId,
-            passengerId: req.user?._id || null, // Optional if user is logged in
-            items: orderItems,
+            PNR,
+            DeliveryLocation,
+            customerDetails,
+            Orderitems,
             totalAmount,
-            deliveryStopId,
-            deliveryLocation: deliveryStop.location,
-            estimatedDeliveryTime: deliveryStop.estimatedArrival,
-            paymentMethod,
-            status: 'pending'
+            otp,
+            paymentId,
+            agentId
         });
+
+        await newOrder.save();
 
         res.status(201).json({
-            status: 'success',
-            data: newOrder
+            message: "Order created successfully",
+            order: newOrder
         });
     } catch (error) {
-        res.status(500).json({
-            message: "Failed to create order",
-            error: error.message
-        });
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 };
+
 
 // 2. GET ORDER BY ID
 const getOrderById = async (req, res) => {
