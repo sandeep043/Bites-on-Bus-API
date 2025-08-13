@@ -2,25 +2,19 @@ const mongoose = require('mongoose');
 
 
 const orderSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant', required: true },
     PNR: { type: mongoose.Schema.Types.ObjectId, ref: 'PNRPassengersDetails', type: String, required: true },
-    DeliveryLocation: {
-        stop: { type: String, required: true },
-        city: { type: String, required: true }
-    },
+
+    stop: { type: String },
+    city: { type: String },
     orderTimeandDate: { type: Date, default: Date.now },
     customerDetails: {
         name: { type: String, required: true },
         phone: { type: String, required: true },
-        PNR: { type: String, required: true },
         seatNo: { type: String, required: true }
     },
-    Orderitems: [{
-        foodItemId: { type: String, required: true },
-        quantity: { type: Number, required: true },
-        unitPrice: { type: Number, required: true }
-    }],
+    Orderitems: [{}],
 
     totalAmount: { type: Number, required: true },
     status: {
