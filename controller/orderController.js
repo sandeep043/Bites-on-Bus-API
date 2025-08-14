@@ -5,104 +5,39 @@ const PNRPassengerDetails = require('../model/PNRPassengersDetails');
 const mongoose = require('mongoose');
 
 
-const createOrder = async (req, res) => {
-    try {
-        const {
-            userId,
-            restaurantId,
-            PNR,
-            DeliveryLocation,
-            customerDetails,
-            Orderitems,
-            totalAmount,
-            otp,
-            paymentId,
-            agentId
-        } = req.body;
-
-
-      
-        // Validate required fields
-        if (
-            !userId ||
-            !restaurantId ||
-            !PNR ||
-            !DeliveryLocation ||
-            !DeliveryLocation.stop ||
-            !DeliveryLocation.city ||
-            !customerDetails ||
-            !customerDetails.name ||
-            !customerDetails.phone ||
-            !customerDetails.PNR ||
-            !customerDetails.seatNo ||
-            !Orderitems ||
-            !Array.isArray(Orderitems) ||
-            Orderitems.length === 0 ||
-            !totalAmount
-        ) {
-            return res.status(400).json({ message: "Missing required fields" });
-        }
-
-        // Create the order
-        const newOrder = new Order({
-            userId,
-            restaurantId,
-            PNR,
-            DeliveryLocation,
-            customerDetails,
-            Orderitems,
-            totalAmount,
-            otp,
-            paymentId,
-            agentId
-        });
-
-        await newOrder.save();
-
-        res.status(201).json({
-            message: "Order created successfully",
-            order: newOrder
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
-    }
-};
-
-
 // 2. GET ORDER BY ID
-const getOrderById = async (req, res) => {
-    try {
-        const orderId = req.params.id;
+// const getOrderById = async (req, res) => {
+//     try {
+//         const orderId = req.params.id;
 
-        if (!mongoose.Types.ObjectId.isValid(orderId)) {
-            return res.status(400).json({ message: "Invalid order ID" });
-        }
+//         if (!mongoose.Types.ObjectId.isValid(orderId)) {
+//             return res.status(400).json({ message: "Invalid order ID" });
+//         }
 
-        const order = await Order.findById(orderId)
-            .populate('restaurantId', 'name cuisineType')
-            .populate('busId', 'busNumber');
+//         const order = await Order.findById(orderId)
+//             .populate('restaurantId', 'name cuisineType')
+//             .populate('busId', 'busNumber');
 
-        if (!order) {
-            return res.status(404).json({ message: "Order not found" });
-        }
+//         if (!order) {
+//             return res.status(404).json({ message: "Order not found" });
+//         }
 
-        // Only allow order owner or admin to view
-        if (order.passengerId && order.passengerId.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ message: "Unauthorized access" });
-        }
+//         // Only allow order owner or admin to view
+//         if (order.passengerId && order.passengerId.toString() !== req.user._id.toString()) {
+//             return res.status(403).json({ message: "Unauthorized access" });
+//         }
 
-        res.status(200).json({
-            status: 'success',
-            data: order
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Failed to fetch order",
-            error: error.message
-        });
-    }
-};
+//         res.status(200).json({
+//             status: 'success',
+//             data: order
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: "Failed to fetch order",
+//             error: error.message
+//         });
+//     }
+// };
 
 // 3. GET ORDERS BY PNR
 const getOrdersByPnr = async (req, res) => {
@@ -126,16 +61,16 @@ const getOrdersByPnr = async (req, res) => {
     }
 };
 
-// 4. UPDATE ORDER STATUS (Admin/Restaurant Owner)
-// 4. UPDATE ORDER STATUS (Agent)
-const updateOrderStatus = async (req, res) => {
-    try {
-        const orderId = req.params.id;
-        const { status, otp } = req.body;
 
-        // Validate inputs
-        if (!mongoose.Types.ObjectId.isValid(orderId)) {
-            return res.status(400).json({ message: "Invalid order ID" });
+
+// Update order status by orderId
+const updateOrderStatusById = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const { status } = req.body;
+
+        if (!orderId || !status) {
+            return res.status(400).json({ message: "orderId and status are required" });
         }
 
         const order = await Order.findById(orderId);
@@ -143,48 +78,12 @@ const updateOrderStatus = async (req, res) => {
             return res.status(404).json({ message: "Order not found" });
         }
 
-        // Verify agent is assigned to this order
-        if (order.agentId.toString() !== req.agent._id.toString()) {
-            return res.status(403).json({ message: "Not assigned to this order" });
-        }
-
-        // Status transition logic
-        switch (status) {
-            case 'picked_up':
-                if (order.deliveryStatus !== 'assigned') {
-                    return res.status(400).json({ message: "Order must be assigned first" });
-                }
-                order.deliveryStatus = 'picked_up';
-                break;
-
-            case 'delivered':
-                if (order.deliveryStatus !== 'picked_up') {
-                    return res.status(400).json({ message: "Order must be picked up first" });
-                }
-                // Verify OTP
-                if (otp !== order.otp) {
-                    return res.status(401).json({ message: "Invalid OTP" });
-                }
-                order.deliveryStatus = 'delivered';
-                order.isOtpVerified = true;
-                order.deliveredAt = Date.now();
-
-                // Mark agent as available
-                await Agent.findByIdAndUpdate(req.agent._id, {
-                    $pull: { assignedOrders: orderId },
-                    isAvailable: true
-                });
-                break;
-
-            default:
-                return res.status(400).json({ message: "Invalid status" });
-        }
-
-        const updatedOrder = await order.save();
+        order.status = status;
+        await order.save();
 
         res.status(200).json({
             status: 'success',
-            data: updatedOrder
+            data: order
         });
     } catch (error) {
         res.status(500).json({
@@ -194,57 +93,6 @@ const updateOrderStatus = async (req, res) => {
     }
 };
 
-// 7. ASSIGN ORDER TO AGENT (Admin)
-const assignOrderToAgent = async (req, res) => {
-    try {
-        const { orderId, agentId } = req.body;
-
-        // Verify order exists
-        const order = await Order.findById(orderId);
-        if (!order) {
-            return res.status(404).json({ message: "Order not found" });
-        }
-
-        // Verify agent exists and is available
-        const agent = await Agent.findOne({
-            _id: agentId,
-            isAvailable: true
-        });
-        if (!agent) {
-            return res.status(400).json({ message: "Agent not available" });
-        }
-
-        // Generate OTP
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-        // Update order
-        const updatedOrder = await Order.findByIdAndUpdate(
-            orderId,
-            {
-                agentId,
-                deliveryStatus: 'assigned',
-                otp
-            },
-            { new: true }
-        );
-
-        // Update agent
-        await Agent.findByIdAndUpdate(agentId, {
-            $push: { assignedOrders: orderId },
-            isAvailable: false
-        });
-
-        res.status(200).json({
-            status: 'success',
-            data: updatedOrder
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Failed to assign order",
-            error: error.message
-        });
-    }
-};
 
 // 8. GET AGENT ORDERS
 const getAgentOrders = async (req, res) => {
@@ -345,6 +193,30 @@ const getRestaurantOrders = async (req, res) => {
     }
 };
 
+// Get all active (not delivered) orders for a restaurant
+const getActiveOrdersByRestaurant = async (req, res) => {
+    try {
+        const { restaurantId } = req.params;
+        if (!restaurantId) {
+            return res.status(400).json({ message: "restaurantId is required" });
+        }
+        const activeOrders = await Order.find({
+            restaurantId: restaurantId,
+            status: { $ne: 'Delivered' }
+        }).sort('-createdAt');
+        res.status(200).json({
+            status: 'success',
+            results: activeOrders.length,
+            data: activeOrders
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to fetch active orders",
+            error: error.message
+        });
+    }
+};
+
 const getAllOrders = async (req, res) => {
     try {
         const orders = await Order.find()
@@ -363,12 +235,76 @@ const getAllOrders = async (req, res) => {
     }
 }
 
+// Get all "Ready to pickup" orders for a given location (stop/city)
+const getReadyToPickupOrdersByLocation = async (req, res) => {
+    try {
+        const { stop, city } = req.query;
+        if (!stop || !city) {
+            return res.status(400).json({ message: "stop and city are required" });
+        }
+        const orders = await Order.find({
+            status: { $in: ["Ready", "Ready to pickup"] },
+            stop: stop,
+            city: city,
+            deliveryStatus: "pending"
+        }).sort('-createdAt');
+        res.status(200).json({
+            status: 'success',
+            results: orders.length,
+            data: orders
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to fetch ready to pickup orders"
+        });
+    }
+};
+
+// Agent accepts an order for delivery
+const acceptOrderForDelivery = async (req, res) => {
+    try {
+        const { orderId, agentId } = req.body;
+        // assuming agent is authenticated and agentId is available
+
+        // Validate orderId
+        if (!orderId || !agentId || !mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).json({ message: "Valid orderId and agentId are required" });
+        }
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        if (order.deliveryStatus !== 'pending' || order.status !== 'Ready to pickup') {
+            return res.status(400).json({ message: "Order is not available for assignment" });
+        }
+
+        order.agentId = agentId;
+        order.deliveryStatus = 'assigned';
+        await order.save();
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Order assigned to agent',
+            data: order
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to accept order for delivery",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
-    createOrder,
-    getOrderById,
+
     getOrdersByPnr,
-    updateOrderStatus,
     cancelOrder,
     getRestaurantOrders,
-    getAllOrders
+    getAllOrders,
+    getActiveOrdersByRestaurant,
+    updateOrderStatusById,
+    getReadyToPickupOrdersByLocation,
+    acceptOrderForDelivery
 };

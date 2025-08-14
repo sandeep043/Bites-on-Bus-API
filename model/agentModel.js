@@ -19,6 +19,11 @@ const agentSchema = new mongoose.Schema({
         stop: { type: String, required: true },
         city: { type: String, required: true }
     },
+    availabelity: {
+        type: String,
+        enum: ['online', 'offline'],
+        default: 'offline'
+    },
     // Add other agent-specific fields here
     createdAt: { type: Date, default: Date.now },
     role: { type: String, enum: ['agent'], default: 'agent' }

@@ -10,6 +10,7 @@ const agentRoutes = require('./routes/agentRoute');
 const adminRoutes = require('./routes/adminRoutes');
 const PNRPassengersDetailsRoute = require('./routes/PNRPassengersDetailsRoute');
 const paymentRoutes = require('./routes/paymentRoute');
+const orderRoutes = require('./routes/orderRoute');
 
 
 
@@ -52,6 +53,8 @@ app.use('/api/agent', agentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/pnr', PNRPassengersDetailsRoute);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/order', orderRoutes);
+
 
 
 

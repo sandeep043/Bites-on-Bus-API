@@ -1,6 +1,8 @@
 const Agent = require('../model/agentModel');
+const Order = require('../model/orderModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 
 // Helper: Generate JWT Token
 const signToken = (id) => {
@@ -103,20 +105,57 @@ const getAllAgents = async (req, res) => {
     }
 };
 
+// Update agent availabelity by agentId
+const updateAgentAvailavelity = async (req, res) => {
+    try {
+        const { agentId } = req.params;
+        const { availabelity } = req.body;
 
+        if (!agentId || !availabelity || !['online', 'offline'].includes(availabelity)) {
+            return res.status(400).json({ message: "agentId and valid availabelity ('online' or 'offline') are required" });
+        }
 
+        const agent = await Agent.findByIdAndUpdate(
+            agentId,
+            { availabelity },
+            { new: true }
+        );
 
+        if (!agent) {
+            return res.status(404).json({ message: "Agent not found" });
+        }
 
+        res.status(200).json({
+            status: 'success',
+            data: agent
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-
-
-
-
-
-
-
-
-
+const getAgentOrdersById = async (req, res) => {
+    try {
+        const { agentId } = req.params;
+        if (!agentId || !mongoose.Types.ObjectId.isValid(agentId)) {
+            return res.status(400).json({ message: "Valid agentId is required" });
+        }
+        const orders = await Order.find({ agentId })
+            .populate('restaurantId', 'name location')
+            .populate('userId', 'name email')
+            .sort('-createdAt');
+        res.status(200).json({
+            status: 'success',
+            results: orders.length,
+            data: orders
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to fetch agent orders",
+            error: error.message
+        });
+    }
+};
 
 module.exports = {
     registerAgent,
@@ -124,5 +163,7 @@ module.exports = {
     getAgentProfile,
     updateAgentProfile,
     deleteAgentAccount,
-    getAllAgents
+    getAllAgents,
+    updateAgentAvailavelity,
+    getAgentOrdersById
 };
