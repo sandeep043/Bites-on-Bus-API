@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant', required: true },
-    PNR: { type: mongoose.Schema.Types.ObjectId, ref: 'PNRPassengersDetails', type: String, required: true },
+    PNR: { type: mongoose.Schema.Types.ObjectId, ref: 'PNRPassengersDetails', required: true },
 
     stop: { type: String },
     city: { type: String },
@@ -36,9 +36,10 @@ const orderSchema = new mongoose.Schema({
     },
     deliveryStatus: {
         type: String,
-        enum: ['pending', 'assigned', 'picked_up', 'delivered', 'in-transit', 'cancelled'],
+        enum: ['pending', 'assigned', 'picked_up', 'Delivered', 'in-transit', 'cancelled'],
         default: 'pending'
-    }
+    },
+    deliveryTime: { type: Date }
 });
 
 

@@ -6,10 +6,7 @@ const pnrPassengerSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    busId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'BusDetails',
-    },
+
     passengers: [{
         passengerId: {
             type: String,
@@ -45,9 +42,8 @@ const pnrPassengerSchema = new mongoose.Schema({
         enum: ['Confirmed', 'Cancelled', 'Pending'],
         default: 'Confirmed'
     },
-    busId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'BusDetails',
+    busNo: {
+        type: String,
         required: true
     },
     departureTime: { type: Date, required: true },

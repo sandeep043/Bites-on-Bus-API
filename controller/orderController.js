@@ -77,6 +77,9 @@ const updateOrderStatusById = async (req, res) => {
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
+        if (status === 'Delivered') {
+            order.deliveryTime = new Date();
+        }
 
         order.status = status;
         await order.save();

@@ -1,3 +1,4 @@
+
 const Agent = require('../model/agentModel');
 const Order = require('../model/orderModel');
 const jwt = require('jsonwebtoken');
@@ -134,6 +135,7 @@ const updateAgentAvailavelity = async (req, res) => {
     }
 };
 
+
 const getAgentOrdersById = async (req, res) => {
     try {
         const { agentId } = req.params;
@@ -156,6 +158,34 @@ const getAgentOrdersById = async (req, res) => {
         });
     }
 };
+// Get all deliveries completed by an agent by ID
+const getCompletedDeliveriesByAgentId = async (req, res) => {
+    try {
+        const { agentId } = req.params;
+        if (!agentId || !mongoose.Types.ObjectId.isValid(agentId)) {
+            return res.status(400).json({ message: "Valid agentId is required" });
+        }
+        // Find orders with deliveryStatus 'delivered' and matching agentId
+        const completedOrders = await Order.find({
+            agentId,
+            status: 'Delivered'
+        })
+            .populate('restaurantId', 'name location')
+            .populate('userId', 'name email')
+            .sort('-createdAt');
+
+        res.status(200).json({
+            status: 'success',
+            results: completedOrders.length,
+            data: completedOrders
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to fetch completed deliveries",
+            error: error.message
+        });
+    }
+};
 
 module.exports = {
     registerAgent,
@@ -165,5 +195,6 @@ module.exports = {
     deleteAgentAccount,
     getAllAgents,
     updateAgentAvailavelity,
-    getAgentOrdersById
+    getAgentOrdersById,
+    getCompletedDeliveriesByAgentId
 };
