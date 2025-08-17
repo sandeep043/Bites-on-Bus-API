@@ -7,7 +7,7 @@ const addUser = async (req, res) => {
         const userData = req.body;
         const existingUser = await User.findOne({ email: userData.email });
         if (existingUser) {
-            return res.status(400).json({ message: "User Already Exists" });
+            return res.status(400).json({ message: "User Already Exists with the Email" });
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
