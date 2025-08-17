@@ -14,6 +14,7 @@ const paymentSchema = new mongoose.Schema({
     error_Message: { type: String },
     orderItems: [{}],
     restaurant_id: { type: mongoose.Schema.Types.ObjectId, ref: 'restaurant' },
+    PNR:{type: mongoose.Schema.Types.ObjectId, ref:"PNRPassengersDetails"},
     addedon: { type: Date },
     orderTimeandDate: { type: Date },
     created_at: { type: Date, default: Date.now }

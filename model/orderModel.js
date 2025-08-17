@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
     totalAmount: { type: Number, required: true },
     status: {
         type: String,
-        enum: ['Placed', 'Preparing', 'Ready', 'Ready to pickup', 'In-transit', 'Delivered', 'Cancelled'],
+        enum: ['Placed', 'Ready', 'Ready to pickup','Picked-up', 'In-transit', 'Delivered', 'Cancelled'],
         default: 'Placed'
     },
     otp: { type: String },
@@ -36,7 +36,7 @@ const orderSchema = new mongoose.Schema({
     },
     deliveryStatus: {
         type: String,
-        enum: ['pending', 'assigned', 'picked_up', 'Delivered', 'in-transit', 'cancelled'],
+        enum: ['pending', 'Assigned','assigned', 'Picked-up', 'Delivered', 'In-transit', 'Cancelled'],
         default: 'pending'
     },
     deliveryTime: { type: Date }

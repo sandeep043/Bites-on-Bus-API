@@ -10,13 +10,12 @@ const {
     getActiveOrdersByRestaurant,
     updateOrderStatusById,
     getReadyToPickupOrdersByLocation,
-    acceptOrderForDelivery } = require('../controller/orderController');
+    acceptOrderForDelivery,
+    getOrderDetailsById } = require('../controller/orderController');
 
 // Create a new order
 
 
-// Get order by ID
-// router.get('/:id', getOrderById);
 
 // Get orders by PNR
 router.get('/pnr/:pnr', getOrdersByPnr);
@@ -34,7 +33,8 @@ router.get('/restaurant/:restaurantId', getRestaurantOrders);
 // Get all active (not delivered) orders for a restaurant
 router.get('/restaurant/:restaurantId/active', getActiveOrdersByRestaurant);
 
-
+// Get order details by orderId with agent, PNR, and restaurant details
+router.get('/details/:orderId', getOrderDetailsById);
 
 // Get all orders (admin)
 router.get('/', getAllOrders);

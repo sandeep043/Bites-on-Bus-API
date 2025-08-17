@@ -42,6 +42,7 @@ const getPayment = async (req, res) => {
             orderTimeandDate: orderTimeandDate,
             orderItems: orderItems,
             restaurant_id: restaurant_id,
+            PNR:  PNRresponse.PNR_ID ,
             // Store UDF mappings for clarity
             // PNRresponse,
             // customerDetails,
@@ -129,10 +130,11 @@ const verifyPayment = async (req, res) => {
                 PNR: (PNRresponse && PNRresponse.PNR_ID) ? PNRresponse.PNR_ID : undefined
             };
 
-            await Order.create(orderObj);
+            const createdOrder = await Order.create(orderObj);
+            var orderId = createdOrder._id;
         }
 
-        res.redirect(`http://localhost:3000/payment/${data.status}/${data.txnid}/${payment_id}`);
+        res.redirect(`http://localhost:3000/payment/${data.status}/${data.txnid}/${payment_id}/${orderId}`);
     } catch (error) {
         res.status(400).send({
             msg: error.message,

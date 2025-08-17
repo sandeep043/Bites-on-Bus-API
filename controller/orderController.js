@@ -5,39 +5,7 @@ const PNRPassengerDetails = require('../model/PNRPassengersDetails');
 const mongoose = require('mongoose');
 
 
-// 2. GET ORDER BY ID
-// const getOrderById = async (req, res) => {
-//     try {
-//         const orderId = req.params.id;
 
-//         if (!mongoose.Types.ObjectId.isValid(orderId)) {
-//             return res.status(400).json({ message: "Invalid order ID" });
-//         }
-
-//         const order = await Order.findById(orderId)
-//             .populate('restaurantId', 'name cuisineType')
-//             .populate('busId', 'busNumber');
-
-//         if (!order) {
-//             return res.status(404).json({ message: "Order not found" });
-//         }
-
-//         // Only allow order owner or admin to view
-//         if (order.passengerId && order.passengerId.toString() !== req.user._id.toString()) {
-//             return res.status(403).json({ message: "Unauthorized access" });
-//         }
-
-//         res.status(200).json({
-//             status: 'success',
-//             data: order
-//         });
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "Failed to fetch order",
-//             error: error.message
-//         });
-//     }
-// };
 
 // 3. GET ORDERS BY PNR
 const getOrdersByPnr = async (req, res) => {
@@ -206,7 +174,8 @@ const getActiveOrdersByRestaurant = async (req, res) => {
         const activeOrders = await Order.find({
             restaurantId: restaurantId,
             status: { $ne: 'Delivered' }
-        }).sort('-createdAt');
+        }) .populate('restaurantId', 'name location')
+            .populate('agentId', ' name idNumber phone vehicleType').sort('-createdAt');
         res.status(200).json({
             status: 'success',
             results: activeOrders.length,
@@ -279,12 +248,12 @@ const acceptOrderForDelivery = async (req, res) => {
             return res.status(404).json({ message: "Order not found" });
         }
 
-        if (order.deliveryStatus !== 'pending' || order.status !== 'Ready to pickup') {
-            return res.status(400).json({ message: "Order is not available for assignment" });
-        }
+        // if (order.deliveryStatus !== 'pending' || order.status !== 'Ready to pickup') {
+        //     return res.status(400).json({ message: "Order is not available for assignment" });
+        // }
 
         order.agentId = agentId;
-        order.deliveryStatus = 'assigned';
+        order.deliveryStatus = 'Assigned';
         await order.save();
 
         res.status(200).json({
@@ -300,6 +269,31 @@ const acceptOrderForDelivery = async (req, res) => {
     }
 };
 
+// Get order details by orderId with agent, PNR, and restaurant details
+const getOrderDetailsById = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        if (!orderId) {
+            return res.status(400).json({ message: "orderId is required" });
+        }
+        const order = await Order.findById(orderId)
+            .populate('agentId', 'name idNumber phone vehicleType')
+            .populate('restaurantId', 'name cuisineType location');
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+        res.status(200).json({
+            status: 'success',
+            data: order
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to fetch order details",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
 
     getOrdersByPnr,
@@ -309,5 +303,6 @@ module.exports = {
     getActiveOrdersByRestaurant,
     updateOrderStatusById,
     getReadyToPickupOrdersByLocation,
-    acceptOrderForDelivery
+    acceptOrderForDelivery,
+    getOrderDetailsById
 };
