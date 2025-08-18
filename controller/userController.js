@@ -1,6 +1,7 @@
 const User = require('../model/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Order = require('../model/orderModel');
 
 const addUser = async (req, res) => {
     try {
@@ -100,6 +101,27 @@ const deleteUser = async (req, res) => {
 
 }
 
+const getUserOrdersWithDetails = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        if (!userId) {
+            return res.status(400).json({ message: "userId is required" });
+        }
+        const orders = await Order.find({ userId })
+            .populate('agentId', 'name idNumber phone vehicleType')
+            .populate('restaurantId', 'name cuisineType location')
+            // .populate('PNR', 'pnr passengers journeyDate busNo stops')
+            .sort('-createdAt');
+        res.status(200).json({
+            status: 'success',
+            results: orders.length,
+            data: orders
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Failed to fetch user orders", error: error.message });
+    }
+};
 
 
 
@@ -137,5 +159,6 @@ module.exports = {
     getUserById,
     updateUser,
     deleteUser,
-    loginUser
+    loginUser,
+    getUserOrdersWithDetails
 }
