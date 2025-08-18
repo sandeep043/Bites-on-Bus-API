@@ -8,21 +8,22 @@ const { addRestaurant,
     getRestaurantsByLocation,
     addMenuItem,
     deleteMenuItem, updateMenuItemAvailability } = require('../controller/restaurantController')
+const authenticate = require('../middleware/authenticate');
+const roleMiddleware = require('../middleware/authMiddleware');
 
-const authMiddleware = require('../middleware/authMiddleware');
 
 router.post('/add', addRestaurant);
 
 router.get('/location', getRestaurantsByLocation)
 
-router.get('/getall', authMiddleware, getAllRestaurants);
+router.get('/getall', getAllRestaurants);
 router.get('/:id', getRestaurantById);
-router.post('/:restaurantId/menu', addMenuItem);
-router.delete('/:restaurantId/menu/:menuItemId', deleteMenuItem);
+router.post('/:restaurantId/menu', authenticate, roleMiddleware('owner'), addMenuItem);
+router.delete('/:restaurantId/menu/:menuItemId', authenticate, roleMiddleware('owner'), deleteMenuItem);
 router.patch('/:restaurantId/menu/:menuItemId/availability', updateMenuItemAvailability);
 
 
-router.put('/update/:id', authMiddleware, updateRestaurant);
-router.delete('/delete/:id', authMiddleware, deleteRestaurant);
+router.put('/update/:id', authenticate, updateRestaurant);
+router.delete('/delete/:id', authenticate, deleteRestaurant);
 
 module.exports = router;

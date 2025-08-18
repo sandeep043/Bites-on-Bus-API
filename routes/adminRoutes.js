@@ -16,7 +16,7 @@ router.post('/register', registerAdmin);
 
 // Login admin
 router.post('/login', loginAdmin);
-router.get('/restaurants', getAllRestaurants);
+router.get('/restaurants', authenticate, getAllRestaurants);
 
 // Get all admins (protected, admin only)
 router.get('/', authenticate, roleMiddleware('admin'), getAllAdmins);
@@ -54,7 +54,7 @@ router.get('/orders', authenticate, roleMiddleware('admin'), getAllOrders);
 
 //register owner  
 // router.post('/register-owner', authenticate, roleMiddleware('admin'), registerOwner);
-router.post('/register-owner', registerOwner);
+router.post('/register-owner', authenticate, roleMiddleware('admin'), registerOwner);
 
 //register agent
 // router.post('/register-agent', authenticate, roleMiddleware('admin'), registerAgent);

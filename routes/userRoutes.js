@@ -8,8 +8,8 @@ const roleMiddleware = require('../middleware/authMiddleware');
 router.post('/register', addUser);
 router.post('/login', loginUser);
 
-router.get('/getall', authenticate, roleMiddleware('user'), getAllUsers);
-router.get('/:id', authenticate, roleMiddleware('user'), getUserById);
+router.get('/getall', authenticate, roleMiddleware('admin'), getAllUsers);
+router.get('/:id', authenticate, roleMiddleware('admin'), getUserById);
 router.put('/update/:id', authenticate, roleMiddleware('user'), updateUser);
 router.delete('/delete/:id', authenticate, roleMiddleware('user'), deleteUser);
 
