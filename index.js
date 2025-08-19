@@ -34,12 +34,6 @@ app.use(cors({
 
 
 
-
-
-
-
-
-
 // //middleware
 
 // //routes  
