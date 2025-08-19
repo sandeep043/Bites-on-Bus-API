@@ -160,7 +160,6 @@ const deleteOwnerAccount = async (req, res) => {
         // 2) Mark restaurants as inactive
         await Restaurant.updateMany(
             { owner: req.owner._id },
-            { isActive: false }
         );
 
         // 3) Delete owner account
