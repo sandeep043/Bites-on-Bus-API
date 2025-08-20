@@ -60,9 +60,13 @@ describe('restaurantOwnerController', () => {
             RestaurantOwner.findOne.mockResolvedValue(owner);
             bcrypt.compare.mockResolvedValue(true);
             jwt.sign.mockReturnValue('token');
+            // Mock populate to return ownerWithRestaurant
+            const ownerWithRestaurant = { _id: '1', email: 'owner@example.com', role: 'owner', ownedRestaurant: { name: 'Rest' } };
+            const populateMock = jest.fn().mockResolvedValue(ownerWithRestaurant);
+            RestaurantOwner.findById = jest.fn().mockReturnValue({ populate: populateMock });
             await restaurantOwnerController.loginOwner(req, res);
             expect(res.status).toHaveBeenCalledWith(200);
-            expect(res.json).toHaveBeenCalledWith({ message: 'login successful', token: 'token', owner });
+            expect(res.json).toHaveBeenCalledWith({ message: 'login successful', token: 'token', owner: ownerWithRestaurant });
         });
 
         it('should return 401 for invalid email', async () => {

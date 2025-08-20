@@ -174,7 +174,7 @@ const getActiveOrdersByRestaurant = async (req, res) => {
         const activeOrders = await Order.find({
             restaurantId: restaurantId,
             status: { $ne: 'Delivered' }
-        }) .populate('restaurantId', 'name location')
+        }).populate('restaurantId', 'name location')
             .populate('agentId', ' name idNumber phone vehicleType').sort('-createdAt');
         res.status(200).json({
             status: 'success',
@@ -293,6 +293,31 @@ const getOrderDetailsById = async (req, res) => {
         });
     }
 };
+const getCompletedOrdersByRestaurant = async (req, res) => {
+    try {
+        const { restaurantId } = req.params;
+        if (!restaurantId) {
+            return res.status(400).json({ message: "restaurantId is required" });
+        }
+        const completedOrders = await Order.find({
+            restaurantId: restaurantId,
+            status: 'Delivered'
+        })
+            .populate('restaurantId', 'name location')
+            .populate('agentId', 'name idNumber phone vehicleType')
+            .sort('-createdAt');
+        res.status(200).json({
+            status: 'success',
+            results: completedOrders.length,
+            data: completedOrders
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to fetch completed orders",
+            error: error.message
+        });
+    }
+};
 
 module.exports = {
 
@@ -304,5 +329,6 @@ module.exports = {
     updateOrderStatusById,
     getReadyToPickupOrdersByLocation,
     acceptOrderForDelivery,
-    getOrderDetailsById
+    getOrderDetailsById,
+    getCompletedOrdersByRestaurant
 };

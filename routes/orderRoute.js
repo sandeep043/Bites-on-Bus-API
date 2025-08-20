@@ -11,7 +11,7 @@ const {
     updateOrderStatusById,
     getReadyToPickupOrdersByLocation,
     acceptOrderForDelivery,
-    getOrderDetailsById } = require('../controller/orderController');
+    getOrderDetailsById, getCompletedOrdersByRestaurant } = require('../controller/orderController');
 
 // Create a new order
 
@@ -42,5 +42,9 @@ router.get('/', getAllOrders);
 router.get('/ready-to-pickup', getReadyToPickupOrdersByLocation);
 
 router.post('/accept-order', acceptOrderForDelivery);
+
+
+//get completed orders by restaurant
+router.get('/restaurant/:restaurantId/completed', getCompletedOrdersByRestaurant);
 
 module.exports = router;

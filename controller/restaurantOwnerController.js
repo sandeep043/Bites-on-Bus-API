@@ -95,10 +95,14 @@ const loginOwner = async (req, res) => {
             "mysecretkey",
             { expiresIn: '1h' }
         );
+        // Populate restaurant details
+        const ownerWithRestaurant = await RestaurantOwner.findById(owner._id)
+            .populate('ownedRestaurant'); // This will include restaurant details
+
         res.status(200).json({
             message: 'login successful',
             token: token,
-            owner: owner
+            owner: ownerWithRestaurant
         });
     } catch (error) {
         console.log(error);

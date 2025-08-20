@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1755599299508" clover="3.2.0">
-  <project timestamp="1755599299509" name="All files">
-    <metrics statements="661" coveredstatements="614" conditionals="213" coveredconditionals="179" methods="61" coveredmethods="57" elements="935" coveredelements="850" complexity="0" loc="661" ncloc="661" packages="2" files="17" classes="17"/>
+<coverage generated="1755686169460" clover="3.2.0">
+  <project timestamp="1755686169460" name="All files">
+    <metrics statements="670" coveredstatements="616" conditionals="215" coveredconditionals="179" methods="62" coveredmethods="57" elements="947" coveredelements="852" complexity="0" loc="670" ncloc="670" packages="2" files="17" classes="17"/>
     <package name="controller">
-      <metrics statements="624" coveredstatements="577" conditionals="213" coveredconditionals="179" methods="61" coveredmethods="57"/>
-      <file name="PNRPassengersDetailsController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\controller\PNRPassengersDetailsController.js">
+      <metrics statements="633" coveredstatements="579" conditionals="215" coveredconditionals="179" methods="62" coveredmethods="57"/>
+      <file name="PNRPassengersDetailsController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\controller\PNRPassengersDetailsController.js">
         <metrics statements="37" coveredstatements="37" conditionals="6" coveredconditionals="6" methods="5" coveredmethods="5"/>
         <line num="2" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
@@ -44,7 +44,7 @@
         <line num="67" count="1" type="stmt"/>
         <line num="71" count="1" type="stmt"/>
       </file>
-      <file name="adminController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\controller\adminController.js">
+      <file name="adminController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\controller\adminController.js">
         <metrics statements="65" coveredstatements="65" conditionals="12" coveredconditionals="12" methods="6" coveredmethods="6"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -112,7 +112,7 @@
         <line num="102" count="1" type="stmt"/>
         <line num="106" count="1" type="stmt"/>
       </file>
-      <file name="agentController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\controller\agentController.js">
+      <file name="agentController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\controller\agentController.js">
         <metrics statements="86" coveredstatements="85" conditionals="27" coveredconditionals="23" methods="11" coveredmethods="10"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -201,8 +201,8 @@
         <line num="183" count="1" type="stmt"/>
         <line num="190" count="1" type="stmt"/>
       </file>
-      <file name="orderController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\controller\orderController.js">
-        <metrics statements="106" coveredstatements="97" conditionals="39" coveredconditionals="34" methods="10" coveredmethods="9"/>
+      <file name="orderController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\controller\orderController.js">
+        <metrics statements="114" coveredstatements="98" conditionals="41" coveredconditionals="34" methods="11" coveredmethods="9"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -308,9 +308,17 @@
         <line num="283" count="0" type="stmt"/>
         <line num="285" count="1" type="stmt"/>
         <line num="290" count="1" type="stmt"/>
-        <line num="297" count="1" type="stmt"/>
+        <line num="296" count="1" type="stmt"/>
+        <line num="297" count="0" type="stmt"/>
+        <line num="298" count="0" type="stmt"/>
+        <line num="299" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="300" count="0" type="stmt"/>
+        <line num="302" count="0" type="stmt"/>
+        <line num="309" count="0" type="stmt"/>
+        <line num="315" count="0" type="stmt"/>
+        <line num="322" count="1" type="stmt"/>
       </file>
-      <file name="paymentController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\controller\paymentController.js">
+      <file name="paymentController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\controller\paymentController.js">
         <metrics statements="44" coveredstatements="41" conditionals="36" coveredconditionals="21" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -357,7 +365,7 @@
         <line num="139" count="1" type="stmt"/>
         <line num="146" count="1" type="stmt"/>
       </file>
-      <file name="restaurantController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\controller\restaurantController.js">
+      <file name="restaurantController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\controller\restaurantController.js">
         <metrics statements="120" coveredstatements="111" conditionals="59" coveredconditionals="53" methods="10" coveredmethods="9"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -480,8 +488,8 @@
         <line num="257" count="1" type="stmt"/>
         <line num="262" count="1" type="stmt"/>
       </file>
-      <file name="restaurantOwnerController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\controller\restaurantOwnerController.js">
-        <metrics statements="91" coveredstatements="80" conditionals="20" coveredconditionals="16" methods="10" coveredmethods="9"/>
+      <file name="restaurantOwnerController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\controller\restaurantOwnerController.js">
+        <metrics statements="92" coveredstatements="81" conditionals="20" coveredconditionals="16" methods="10" coveredmethods="9"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
@@ -536,45 +544,46 @@
         <line num="89" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="90" count="1" type="stmt"/>
         <line num="93" count="1" type="stmt"/>
-        <line num="98" count="1" type="stmt"/>
-        <line num="104" count="0" type="stmt"/>
-        <line num="105" count="0" type="stmt"/>
-        <line num="112" count="1" type="stmt"/>
-        <line num="113" count="2" type="stmt"/>
-        <line num="114" count="2" type="stmt"/>
-        <line num="120" count="1" type="stmt"/>
-        <line num="125" count="1" type="stmt"/>
-        <line num="130" count="1" type="stmt"/>
-        <line num="131" count="2" type="stmt"/>
-        <line num="133" count="2" type="stmt"/>
-        <line num="134" count="2" type="stmt"/>
+        <line num="99" count="1" type="stmt"/>
+        <line num="102" count="1" type="stmt"/>
+        <line num="108" count="0" type="stmt"/>
+        <line num="109" count="0" type="stmt"/>
+        <line num="116" count="1" type="stmt"/>
+        <line num="117" count="2" type="stmt"/>
+        <line num="118" count="2" type="stmt"/>
+        <line num="124" count="1" type="stmt"/>
+        <line num="129" count="1" type="stmt"/>
+        <line num="134" count="1" type="stmt"/>
         <line num="135" count="2" type="stmt"/>
-        <line num="136" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="137" count="2" type="stmt"/>
+        <line num="138" count="2" type="stmt"/>
         <line num="139" count="2" type="stmt"/>
-        <line num="145" count="1" type="stmt"/>
-        <line num="150" count="1" type="stmt"/>
-        <line num="155" count="1" type="stmt"/>
-        <line num="156" count="1" type="stmt"/>
-        <line num="158" count="1" type="stmt"/>
-        <line num="161" count="0" type="stmt"/>
-        <line num="166" count="0" type="stmt"/>
-        <line num="168" count="0" type="stmt"/>
-        <line num="173" count="1" type="stmt"/>
-        <line num="178" count="1" type="stmt"/>
-        <line num="179" count="1" type="stmt"/>
-        <line num="181" count="1" type="stmt"/>
+        <line num="140" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="143" count="2" type="stmt"/>
+        <line num="149" count="1" type="stmt"/>
+        <line num="154" count="1" type="stmt"/>
+        <line num="159" count="1" type="stmt"/>
+        <line num="160" count="1" type="stmt"/>
+        <line num="162" count="1" type="stmt"/>
+        <line num="165" count="0" type="stmt"/>
+        <line num="170" count="0" type="stmt"/>
+        <line num="172" count="0" type="stmt"/>
+        <line num="177" count="1" type="stmt"/>
+        <line num="182" count="1" type="stmt"/>
         <line num="183" count="1" type="stmt"/>
-        <line num="186" count="0" type="stmt"/>
-        <line num="191" count="0" type="stmt"/>
-        <line num="196" count="1" type="stmt"/>
+        <line num="185" count="1" type="stmt"/>
+        <line num="187" count="1" type="stmt"/>
+        <line num="190" count="0" type="stmt"/>
+        <line num="195" count="0" type="stmt"/>
         <line num="200" count="1" type="stmt"/>
-        <line num="201" count="1" type="stmt"/>
-        <line num="202" count="1" type="stmt"/>
-        <line num="203" count="1" type="stmt"/>
-        <line num="208" count="0" type="stmt"/>
-        <line num="212" count="1" type="stmt"/>
+        <line num="204" count="1" type="stmt"/>
+        <line num="205" count="1" type="stmt"/>
+        <line num="206" count="1" type="stmt"/>
+        <line num="207" count="1" type="stmt"/>
+        <line num="212" count="0" type="stmt"/>
+        <line num="216" count="1" type="stmt"/>
       </file>
-      <file name="userController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\controller\userController.js">
+      <file name="userController.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\controller\userController.js">
         <metrics statements="75" coveredstatements="61" conditionals="14" coveredconditionals="14" methods="7" coveredmethods="7"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -655,14 +664,14 @@
     </package>
     <package name="model">
       <metrics statements="37" coveredstatements="37" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="PNRPassengersDetails.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\model\PNRPassengersDetails.js">
+      <file name="PNRPassengersDetails.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\model\PNRPassengersDetails.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
         <line num="63" count="2" type="stmt"/>
         <line num="64" count="2" type="stmt"/>
       </file>
-      <file name="adminModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\model\adminModel.js">
+      <file name="adminModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\model\adminModel.js">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -670,40 +679,40 @@
         <line num="33" count="1" type="stmt"/>
         <line num="34" count="1" type="stmt"/>
       </file>
-      <file name="agentModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\model\agentModel.js">
+      <file name="agentModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\model\agentModel.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="32" count="1" type="stmt"/>
         <line num="33" count="1" type="stmt"/>
       </file>
-      <file name="busTripModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\model\busTripModel.js">
+      <file name="busTripModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\model\busTripModel.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
         <line num="29" count="1" type="stmt"/>
         <line num="30" count="1" type="stmt"/>
       </file>
-      <file name="orderModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\model\orderModel.js">
+      <file name="orderModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\model\orderModel.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="4" count="4" type="stmt"/>
         <line num="46" count="4" type="stmt"/>
         <line num="47" count="4" type="stmt"/>
       </file>
-      <file name="paymentModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\model\paymentModel.js">
+      <file name="paymentModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\model\paymentModel.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="23" count="1" type="stmt"/>
       </file>
-      <file name="restaurantModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\model\restaurantModel.js">
+      <file name="restaurantModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\model\restaurantModel.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
         <line num="49" count="3" type="stmt"/>
       </file>
-      <file name="restaurantOwnerModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\model\restaurantOwnerModel.js">
+      <file name="restaurantOwnerModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\model\restaurantOwnerModel.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -712,7 +721,7 @@
         <line num="27" count="1" type="stmt"/>
         <line num="28" count="1" type="stmt"/>
       </file>
-      <file name="userModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\backend\model\userModel.js">
+      <file name="userModel.js" path="D:\Sandeep\Bites on Bus ALL\Bites On Bus\newBackend\Bites-on-Bus-API\model\userModel.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
