@@ -36,7 +36,7 @@ router.delete('/:id', authenticate, roleMiddleware('admin'), deleteAdmin);
 // Add any additional admin-specific routes here
 
 //get all agents (protected, admin only)
-router.get('/agents', authenticate, roleMiddleware('admin'), getAllAgents);
+router.get('/agents/details', authenticate, roleMiddleware('admin'), getAllAgents);
 
 //get all users (protected, admin only)
 router.get('/users', authenticate, roleMiddleware('admin'), getAllUsers);
