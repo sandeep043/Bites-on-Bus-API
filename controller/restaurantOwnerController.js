@@ -1,4 +1,5 @@
 const RestaurantOwner = require('../model/restaurantOwnerModel'); // Fix import path
+const Restaurant = require('../model/restaurantModel');
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -158,20 +159,30 @@ const updateOwnerProfile = async (req, res) => {
 // 6. DELETE OWNER ACCOUNT
 const deleteOwnerAccount = async (req, res) => {
     try {
-        // 1) Find all restaurants owned by this user
-        const restaurants = await Restaurant.find({ owner: req.owner._id });
+        const ownerId = req.params.id;
+        if (!mongoose.Types.ObjectId.isValid(ownerId)) {
+            return res.status(400).json({ message: "Invalid owner ID" });
+        }
+        const owner = await RestaurantOwner.findById(ownerId);
+        if (!owner) {
+            return res.status(404).json({ message: "Owner not found" });
+        }
 
-        // 2) Mark restaurants as inactive
-        await Restaurant.updateMany(
-            { owner: req.owner._id },
-        );
+        // 1) Find all restaurants owned by this user
+        const restaurants = await Restaurant.find({ owner: ownerId });
+
+        // 2) Remove all restaurants owned by this user
+        if (restaurants.length > 0) {
+            await Restaurant.deleteMany({ owner: ownerId });
+        }
+
 
         // 3) Delete owner account
-        await RestaurantOwner.findByIdAndDelete(req.owner._id);
+        await RestaurantOwner.findByIdAndDelete(ownerId);
 
-        res.status(204).json({
+        res.status(200).json({
             status: 'success',
-            data: null
+            message: 'Owner account and associated restaurants deleted successfully'
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

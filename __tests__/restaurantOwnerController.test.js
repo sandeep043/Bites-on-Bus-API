@@ -143,7 +143,7 @@ describe('restaurantOwnerController', () => {
     describe('deleteOwnerAccount', () => {
 
         it('should handle errors', async () => {
-            req.owner = { _id: 'ownerId' };
+            req.params.id = { id: 'ownerId' };
             Restaurant.find.mockRejectedValue(new Error('fail'));
             await restaurantOwnerController.deleteOwnerAccount(req, res);
             expect(res.status).toHaveBeenCalledWith(500);
