@@ -5,6 +5,7 @@ const restaurantSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    RestaurantURL: { type: String },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'RestaurantOwner'
@@ -37,7 +38,8 @@ const restaurantSchema = new mongoose.Schema({
         price: { type: Number, required: true },
         prepTime: { type: Number, required: true }, // in minutes
         dietaryTags: [{ type: String }],
-        isAvailable: { type: Boolean, default: true }
+        isAvailable: { type: Boolean, default: true },
+        ImageURL: { type: String },
     }],
     isActive: {
         type: Boolean,
