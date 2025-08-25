@@ -23,7 +23,7 @@ router.delete('/:restaurantId/menu/:menuItemId', authenticate, roleMiddleware('o
 router.patch('/:restaurantId/menu/:menuItemId/availability', updateMenuItemAvailability);
 
 
-router.put('/update/:id', authenticate, updateRestaurant);
+router.put('/update/:id', authenticate, roleMiddleware('admin'), updateRestaurant);
 router.delete('/delete/:id', authenticate, deleteRestaurant);
 
 module.exports = router;

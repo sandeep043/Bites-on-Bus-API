@@ -128,6 +128,7 @@ const updateRestaurant = async (req, res) => {
         const restaurantId = req.params.id;
         const updatedData = req.body;
 
+
         if (!mongoose.Types.ObjectId.isValid(restaurantId)) {
             return res.status(400).json({ message: "Invalid Restaurant ID" });
         }
