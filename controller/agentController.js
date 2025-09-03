@@ -68,28 +68,44 @@ const getAgentProfile = async (req, res) => {
 };
 
 // 4. UPDATE AGENT PROFILE
-const updateAgentProfile = async (req, res) => {
+const updateAgent = async (req, res) => {
+
     try {
-        const filteredBody = {};
-        const allowedFields = ['name', 'email', 'phone'];
-        Object.keys(req.body).forEach(el => {
-            if (allowedFields.includes(el)) filteredBody[el] = req.body[el];
-        });
-        const updatedAgent = await Agent.findByIdAndUpdate(
-            req.agent._id,
-            filteredBody,
+        const AgentId = req.params.id;
+        const updatedData = req.body;
+
+
+        if (!mongoose.Types.ObjectId.isValid(AgentId)) {
+            return res.status(400).json({ message: "Invalid Agent ID" });
+        }
+
+        const agent = await Agent.findByIdAndUpdate(
+            AgentId,
+            updatedData,
             { new: true, runValidators: true }
         );
-        res.status(200).json({ status: 'success', data: updatedAgent });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+
+        if (!agent) {
+            return res.status(404).json({ message: "Agent Not Found" });
+        }
+
+        res.status(200).json({ message: "Agent Updated Successfully", agent });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
     }
 };
 
 // 5. DELETE AGENT ACCOUNT
 const deleteAgentAccount = async (req, res) => {
     try {
-        await Agent.findByIdAndDelete(req.agent._id);
+        const agentId = req.params.id;
+        if (!mongoose.Types.ObjectId.isValid(agentId)) {
+            return res.status(400).json({ message: "Invalid owner ID" });
+        }
+
+        await Agent.findByIdAndDelete(agentId);
         res.status(204).json({ status: 'success', data: null });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -191,7 +207,7 @@ module.exports = {
     registerAgent,
     loginAgent,
     getAgentProfile,
-    updateAgentProfile,
+    updateAgent,
     deleteAgentAccount,
     getAllAgents,
     updateAgentAvailavelity,

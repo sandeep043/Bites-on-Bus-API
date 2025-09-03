@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerAgent, loginAgent, getAgentProfile, updateAgentProfile, deleteAgentAccount, updateAgentAvailavelity, getAgentOrdersById, getCompletedDeliveriesByAgentId } = require('../controller/agentController');
+const { registerAgent, loginAgent, getAgentProfile, updateAgent, deleteAgentAccount, updateAgentAvailavelity, getAgentOrdersById, getCompletedDeliveriesByAgentId } = require('../controller/agentController');
 const authenticate = require('../middleware/authenticate');
 const roleMiddleware = require('../middleware/authMiddleware');
 
@@ -14,10 +14,8 @@ router.post('/login', loginAgent);
 router.get('/profile', authenticate, roleMiddleware('agent'), getAgentProfile);
 
 // Update agent profile (protected)
-router.put('/update', authenticate, roleMiddleware('agent'), updateAgentProfile);
+router.put('/update/:id', authenticate, roleMiddleware('admin'), updateAgent);
 
-// Delete agent account (protected)
-router.delete('/delete', authenticate, roleMiddleware('agent'), deleteAgentAccount);
 
 // Update agent availabelity by agentId (protected)
 router.patch('/availabelity/:agentId', updateAgentAvailavelity);

@@ -4,7 +4,7 @@ const { registerAdmin, loginAdmin, getAllAdmins, getAdminById, updateAdmin, dele
 const authenticate = require('../middleware/authenticate');
 const roleMiddleware = require('../middleware/authMiddleware');
 const { getAllOwners } = require('../controller/restaurantOwnerController');
-const { getAllAgents } = require('../controller/agentController');
+const { getAllAgents, deleteAgentAccount } = require('../controller/agentController');
 const { getAllUsers } = require('../controller/userController');
 const { getAllRestaurants } = require('../controller/restaurantController');
 const { getAllOrders } = require('../controller/orderController');
@@ -63,6 +63,8 @@ router.post('/register-agent', registerAgent);
 
 //delete owner account
 router.delete('/owner/:id', authenticate, roleMiddleware('admin'), deleteOwnerAccount);
+
+router.delete('/agent/:id', authenticate, roleMiddleware('admin'), deleteAgentAccount);
 
 
 

@@ -124,49 +124,95 @@ describe('agentController', () => {
     });
 
     describe('updateAgentProfile', () => {
-        it('should update agent profile with allowed fields', async () => {
-            req.agent = { _id: 'agentId' };
-            req.body = { name: 'New Name', email: 'new@email.com', phone: '123', extra: 'ignore' };
-            const updatedAgent = { _id: 'agentId', name: 'New Name' };
-            Agent.findByIdAndUpdate.mockResolvedValue(updatedAgent);
-            await agentController.updateAgentProfile(req, res);
-            expect(Agent.findByIdAndUpdate).toHaveBeenCalledWith(
-                'agentId',
-                { name: 'New Name', email: 'new@email.com', phone: '123' },
-                { new: true, runValidators: true }
-            );
-            expect(res.status).toHaveBeenCalledWith(200);
-            expect(res.json).toHaveBeenCalledWith({ status: 'success', data: updatedAgent });
-        });
-
-        it('should handle errors', async () => {
-            req.agent = { _id: 'agentId' };
-            req.body = { name: 'New Name' };
-            Agent.findByIdAndUpdate.mockRejectedValue(new Error('fail'));
-            await agentController.updateAgentProfile(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
-        });
+    it('should update agent profile with valid data', async () => {
+        req.params = { id: 'validAgentId' };
+        req.body = { name: 'New Name', email: 'new@email.com', phone: '123' };
+        const updatedAgent = { _id: 'validAgentId', name: 'New Name', email: 'new@email.com', phone: '123' };
+        
+        Agent.findByIdAndUpdate.mockResolvedValue(updatedAgent);
+        mongoose.Types.ObjectId.isValid.mockReturnValue(true);
+        
+        await agentController.updateAgent(req, res);
+        
+        expect(Agent.findByIdAndUpdate).toHaveBeenCalledWith(
+            'validAgentId',
+            { name: 'New Name', email: 'new@email.com', phone: '123' },
+            { new: true, runValidators: true }
+        );
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Agent Updated Successfully', agent: updatedAgent });
     });
+
+    it('should return 400 for invalid agent ID', async () => {
+        req.params = { id: 'invalidId' };
+        mongoose.Types.ObjectId.isValid.mockReturnValue(false);
+        
+        await agentController.updateAgent(req, res);
+        
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Invalid Agent ID' });
+    });
+
+    it('should return 404 when agent not found', async () => {
+        req.params = { id: 'nonExistentAgentId' };
+        req.body = { name: 'New Name' };
+        mongoose.Types.ObjectId.isValid.mockReturnValue(true);
+        Agent.findByIdAndUpdate.mockResolvedValue(null);
+        
+        await agentController.updateAgent(req, res);
+        
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Agent Not Found' });
+    });
+
+    it('should handle errors', async () => {
+        req.params = { id: 'validAgentId' };
+        req.body = { name: 'New Name' };
+        mongoose.Types.ObjectId.isValid.mockReturnValue(true);
+        Agent.findByIdAndUpdate.mockRejectedValue(new Error('Database error'));
+        
+        await agentController.updateAgent(req, res);
+        
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Internal Server Error', error: expect.any(Error) });
+    });
+});
+
 
     describe('deleteAgentAccount', () => {
-        it('should delete agent account', async () => {
-            req.agent = { _id: 'agentId' };
-            Agent.findByIdAndDelete.mockResolvedValue({});
-            await agentController.deleteAgentAccount(req, res);
-            expect(Agent.findByIdAndDelete).toHaveBeenCalledWith('agentId');
-            expect(res.status).toHaveBeenCalledWith(204);
-            expect(res.json).toHaveBeenCalledWith({ status: 'success', data: null });
-        });
-
-        it('should handle errors', async () => {
-            req.agent = { _id: 'agentId' };
-            Agent.findByIdAndDelete.mockRejectedValue(new Error('fail'));
-            await agentController.deleteAgentAccount(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
-        });
+    it('should delete agent account with valid ID', async () => {
+        req.params = { id: 'validAgentId' };
+        mongoose.Types.ObjectId.isValid.mockReturnValue(true);
+        Agent.findByIdAndDelete.mockResolvedValue({});
+        
+        await agentController.deleteAgentAccount(req, res);
+        
+        expect(Agent.findByIdAndDelete).toHaveBeenCalledWith('validAgentId');
+        expect(res.status).toHaveBeenCalledWith(204);
+        expect(res.json).toHaveBeenCalledWith({ status: 'success', data: null });
     });
+
+    it('should return 400 for invalid agent ID', async () => {
+        req.params = { id: 'invalidId' };
+        mongoose.Types.ObjectId.isValid.mockReturnValue(false);
+        
+        await agentController.deleteAgentAccount(req, res);
+        
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Invalid owner ID' });
+    });
+
+    it('should handle errors', async () => {
+        req.params = { id: 'validAgentId' };
+        mongoose.Types.ObjectId.isValid.mockReturnValue(true);
+        Agent.findByIdAndDelete.mockRejectedValue(new Error('Database error'));
+        
+        await agentController.deleteAgentAccount(req, res);
+        
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
+    });
+});
 
     describe('getAllAgents', () => {
         it('should return all agents', async () => {
